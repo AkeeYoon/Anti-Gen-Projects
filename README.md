@@ -14,5 +14,11 @@
 
 현재 에이전트를 통해 관리 및 릴리즈되고 있는 프로젝트 목록입니다. 각 폴더를 클릭하면 해당 프로젝트의 버전별 소스와 변경 이력을 확인할 수 있습니다.
 
-* [**ServerNet**](./repositories/ServerNet) - Power Control App (현재 v1.0)
+* 🎬 [**PJArea (Projector Area)**](./repositories/PJArea) - **v1.0**
+  다수의 빔프로젝터를 이용해 거대한 화면(Wall)을 구성할 때 필요한 물리적 해상도 계산, Edge Blending(오버랩) 수치 도출, 설치 및 렌즈 크롭 가이드 시뮬레이터 역할을 수행하는 인터랙티브 웹앱.
+
+* ⚡ [**ServerNet (Power Control)**](./repositories/ServerNet) - **v1.0**
+  원격 서버 전원 제어 및 로컬 PC 전원 관리 시스템 플랫폼. 서버 시스템 통신망(WOL 매직 패킷, 원격 셧다운 컨트롤 등)을 조작하는 Client/Server 아키텍처 및 UI 유틸리티.
+
+---
 *이 저장소의 파일과 커밋은 자동화 에이전트에 의해 파싱되어 배포되고 있습니다.*
