@@ -22,15 +22,13 @@
   - `project_name`: 프로젝트 폴더 이름
   - `version`: 결정된 버전 (예: `v1.0`)
   - `files_to_copy`: 이동/저장할 원본 파일 경로 목록 또는 파일 생성 지시
-* **기대 결과**: `repositories/<project_name>/<version>/` 경로에 파일이 올바르게 위치해야 합니다.
-*(참고: 에이전트는 스크립트 실행 후, 필요시 해당 버전에 맞는 짧은 `README.md`나 `changelog`를 해당 버전 폴더 내에 생성하여 변경 이력을 남겨야 합니다.)*
+  - `msg_or_desc`: 해당 버전에 대한 설명 및 새로운 기능 요약 텍스트 (이 내용은 CHANGELOG.md로 렌더링 됩니다)
+* **기대 결과**: `repositories/<project_name>/<version>/` 경로에 소스코드와 표준 `CHANGELOG.md`가 올바르게 위치해야 합니다.
 
 ### 3단계: GitHub 동기화 (Execution - sync_to_github)
 파일 정리가 끝나면 Git을 통해 버전을 확정하고 리모트 저장소에 업로드합니다. `execution/sync_to_github.py` 스크립트를 호출합니다.
 
-* **입력 매개변수**:
-  - `commit_message`: "feat: <project_name> <version> - <변경내용 요약>" 형태의 명확한 메시지를 생성하여 전달합니다.
-* **기대 결과**: 스크립트가 해당 변경사항을 `git add`, `git commit`, `git push` 처리합니다.
+* **기대 결과**: 스크립트가 내부적으로 `repositories/` 폴더만을 대상으로 `git add` 처리하고 브랜치를 직관적으로 `main`으로 통일시킨 후 `git commit`, `git push`를 처리합니다. 에이전트는 불필요한 스크립트가 올라가지 않도록 이 스크립트만 신뢰하여 실행합니다.
 
 ## 시스템 제약 및 예외 처리 (Self-Annealing)
 1. 스크립트(`manage_repository.py` 또는 `sync_to_github.py`) 실행 중 에러(예: Git 충돌, 폴더 권한 오류)가 발생하면:

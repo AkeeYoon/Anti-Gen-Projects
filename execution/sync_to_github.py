@@ -81,8 +81,8 @@ def sync_to_github(commit_message):
         else:
              print("경고: GITHUB_REPO_URL이 올바른 HTTP/HTTPS 형식이 아닙니다.", file=sys.stderr)
 
-    print("\n--- 1. 변경사항 추가 (git add .) ---")
-    run_git_command(["git", "add", "."], cwd=base_dir)
+    print("\n--- 1. 변경사항 추가 (git add repositories/) ---")
+    run_git_command(["git", "add", "repositories/"], cwd=base_dir)
 
     print("\n--- 2. 변경사항 커밋 (git commit) ---")
     success, _ = run_git_command(["git", "commit", "-m", commit_message], cwd=base_dir)
@@ -90,13 +90,13 @@ def sync_to_github(commit_message):
         print("\n커밋할 변경사항이 없거나 에러가 발생했습니다.")
         # 변경할게 없을때는 에러가 아니므로 정상 종료로 간주
         sys.exit(0)
+        
+    print("\n--- 3. 메인 브랜치명 통일 (git branch -M main) ---")
+    run_git_command(["git", "branch", "-M", "main"], cwd=base_dir)
 
-    print("\n--- 3. 변경사항 푸시 (git push) ---")
+    print("\n--- 4. 변경사항 푸시 (git push) ---")
     # 기본적인 push (처음엔 푸시가 실패할 수 있으므로 upstream 설정 추가)
     success, output = run_git_command(["git", "push", "-u", "origin", "main"], cwd=base_dir)
-    if not success:
-		# main 브랜치가 아닐 수도 있으므로 강제로 현재 브랜치 푸시 시도
-        success, output = run_git_command(["git", "push", "-u", "origin", "HEAD"], cwd=base_dir)
         
     if success:
         print("\n[OK] 성공적으로 GitHub에 동기화(Push) 되었습니다!")

@@ -3,6 +3,8 @@ import os
 import shutil
 import json
 
+from datetime import datetime
+
 def get_base_dir():
     """
     환경변수 또는 스크립트 위치를 기준으로 기준 디렉토리를 가져옵니다.
@@ -12,7 +14,7 @@ def get_base_dir():
     # execution/ 의 상위 디렉터리 반환
     return os.path.dirname(script_dir)
 
-def manage_repository(project_name, version, source_files, readme_content=None):
+def manage_repository(project_name, version, source_files, readme_content=None, changelog_content=None):
     """
     주어진 파일들을 `repositories/<project_name>/<version>/`으로 복사합니다.
     """
@@ -56,6 +58,25 @@ def manage_repository(project_name, version, source_files, readme_content=None):
         except Exception as e:
             print(f"오류: README.md 생성 실패. ({e})", file=sys.stderr)
 
+    # 3. CHANGELOG 생성 (선택 사항)
+    if changelog_content:
+        # 프로젝트 루트 디렉토리(version 폴더의 상위)에 CHANGELOG.md 생성/업데이트
+        project_root = os.path.join(repo_base, project_name)
+        changelog_path = os.path.join(project_root, "CHANGELOG.md")
+        date_str = datetime.now().strftime("%Y-%m-%d")
+        
+        mode = "a" if os.path.exists(changelog_path) else "w"
+        try:
+            with open(changelog_path, mode, encoding="utf-8") as f:
+                if mode == "w":
+                    f.write(f"# Changelog ({project_name})\n\n")
+                
+                f.write(f"## [{version}] - {date_str}\n")
+                f.write(f"{changelog_content}\n\n")
+            print("[OK] CHANGELOG.md 업데이트 완료")
+        except Exception as e:
+            print(f"오류: CHANGELOG.md 업데이트 실패. ({e})", file=sys.stderr)
+
     print(f"성공: {project_name}({version}) 관리 완료. 총 {len(copied_files)}개 항목 복사됨.")
 
 if __name__ == "__main__":
@@ -66,7 +87,8 @@ if __name__ == "__main__":
     parser.add_argument("--version", required=True, help="버전 (예: v1.0)")
     parser.add_argument("--files", nargs="*", default=[], help="이동/복사할 원본 파일/폴더 경로 리스트")
     parser.add_argument("--readme", type=str, help="프로젝트에 추가할 README.md 내용 (선택사항)")
+    parser.add_argument("--changelog", type=str, help="CHANGELOG.md에 추가할 변경사항 요약 리스트 (선택사항)")
 
     args = parser.parse_args()
     
-    manage_repository(args.project, args.version, args.files, args.readme)
+    manage_repository(args.project, args.version, args.files, args.readme, args.changelog)
