@@ -2,3 +2,12 @@ credentials.json
 token.json
 .env
 .tmp/
+
+# Ignore Agent orchestration files (only publish README and repositories)
+directives/
+execution/
+inbox/
+*.md
+!README.md
+!repositories/**/CHANGELOG.md
+!repositories/**/README.md
