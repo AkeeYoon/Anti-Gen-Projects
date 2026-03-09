@@ -99,9 +99,9 @@ def sync_to_github(commit_message):
         success, output = run_git_command(["git", "push", "-u", "origin", "HEAD"], cwd=base_dir)
         
     if success:
-        print("\n✅ 성공적으로 GitHub에 동기화(Push) 되었습니다!")
+        print("\n[OK] 성공적으로 GitHub에 동기화(Push) 되었습니다!")
     else:
-        print("\n❌ Push 실패. 원격 저장소 연결을 확인하거나('git remote -v'), 처음 Push할 경우 'git push -u origin <branch>'가 필요합니다.", file=sys.stderr)
+        print("\n[FAIL] Push 실패. 원격 저장소 연결을 확인하거나('git remote -v'), 처음 Push할 경우 'git push -u origin <branch>'가 필요합니다.", file=sys.stderr)
         sys.exit(1)
 
 if __name__ == "__main__":
