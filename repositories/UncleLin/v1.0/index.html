@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>린저씨 키우기 : 전설의 랭커</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- 모던한 UI를 위한 폰트와 게임 감성을 위한 폰트 혼합 -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Noto+Sans+KR:wght@400;700;900&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div id="game-container" class="tier-1">
+
+        <!-- 상단 안전 영역 (Notch) & 현실 스탯 패널 (Glassmorphism) -->
+        <header id="top-panel" class="glass-panel">
+            <div class="header-title">
+                <span id="stat-rank" class="badge rank-badge"
+                    style="cursor:pointer; display:flex; align-items:center; gap:4px;">직급: 김대리 <span
+                        style="font-size:10px;">ℹ️</span></span>
+                <span id="player-name" class="game-title" style="cursor: pointer;" title="이름을 클릭하여 변경하세요">전설의 랭커</span>
+            </div>
+            <div class="top-stats" style="display:flex; flex-direction:column; gap:6px;">
+                <div style="display:flex; gap:10px;">
+                    <div class="stat-pill cash-pill" style="cursor: pointer;" id="btn-open-exchange">
+                        <span class="icon">💵</span>
+                        <span id="stat-fund">0</span>
+                        <span style="font-size:10px; opacity:0.7; margin-left:auto;">➕</span>
+                    </div>
+                    <div class="stat-pill anger-pill">
+                        <span class="icon">💢</span>
+                        <div class="progress-bar-container max-width-bar">
+                            <div id="stat-anger-fill" class="progress-fill anger-gradient" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 투명 배경 체력바 영역 -->
+                <div style="display:flex; gap:15px; padding: 0 4px;">
+                    <!-- 플레이어 체력 -->
+                    <div style="flex:1; display:flex; flex-direction:column; gap:4px;">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+                            <span style="font-size:11px; font-weight:bold; color:var(--text-main);">👨‍💼 플레이어</span>
+                            <span id="player-hp-text"
+                                style="font-size:10px; color:#fca5a5; font-weight:bold;">100/100</span>
+                        </div>
+                        <div class="progress-bar-container" style="height:6px; box-shadow:0 0 5px rgba(239,68,68,0.3);">
+                            <div id="player-hp-fill" class="progress-fill hp-gradient"
+                                style="width: 100%; background: linear-gradient(90deg, #ef4444, #f87171);"></div>
+                        </div>
+                    </div>
+                    <!-- 몬스터 체력 -->
+                    <div style="flex:1; display:flex; flex-direction:column; gap:4px;">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+                            <span style="font-size:11px; font-weight:bold; color:var(--text-main);">👹 몬스터</span>
+                            <span id="monster-hp-text"
+                                style="font-size:10px; color:#fca5a5; font-weight:bold;">100/100</span>
+                        </div>
+                        <div class="progress-bar-container" style="height:6px; box-shadow:0 0 5px rgba(239,68,68,0.3);">
+                            <div id="monster-hp-fill" class="progress-fill hp-gradient" style="width: 100%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 중앙 패널: 게임 뷰 (시각적 연출 강화) -->
+        <main id="mid-panel">
+            <div id="visual-view">
+                <div class="scene-overlay"></div>
+                <div class="character-area">
+                    <div class="player-wrapper">
+                        <div id="character-sprite" class="sprite-anim ui-sprite">👨‍💼</div>
+                    </div>
+
+                    <div class="vs-effect">VS</div>
+
+                    <div class="enemy-wrapper">
+                        <div id="monster-sprite" class="ui-sprite">👹</div>
+                    </div>
+                </div>
+                <!-- 강화 이펙트 오버레이 -->
+                <div id="crt-overlay"></div>
+            </div>
+
+            <!-- 인게임 스탯 대시보드 (Glassmorphism) -->
+            <div class="in-game-dashboard glass-panel">
+                <div class="main-stats-row">
+                    <div class="level-box" style="position:relative; width:70px;">
+                        <div style="display:flex; justify-content:center; align-items:baseline; gap:3px;">
+                            <span class="label">Lv.</span>
+                            <span id="stat-level" class="val text-glow">1</span>
+                        </div>
+                        <div class="progress-bar-container"
+                            style="height:4px; width:100%; margin-top:2px; box-shadow:0 0 2px #000;">
+                            <div id="stat-exp-fill" class="progress-fill exp-gradient" style="width: 0%;"></div>
+                        </div>
+                        <div id="stat-exp-text" style="font-size:9px; color:#cbd5e1; margin-top:2px;">0.0%</div>
+                    </div>
+                    <div class="adena-box flex-grow">
+                        <span class="icon">💰</span>
+                        <span id="stat-adena" class="val color-gold">0</span>
+                    </div>
+                    <div class="combat-power">
+                        <span class="label">전투력 <span id="stat-target-cp"
+                                style="color: #fbbf24; font-size: 9px; opacity: 0.8;">(목표: 150)</span></span>
+                        <span id="stat-cp" class="val color-cp">10</span>
+                    </div>
+                </div>
+
+                <div class="equip-viewer">
+                    <div class="equip-slot wpn-slot" data-label="무기">
+                        <div class="slot-icon">🗡️</div>
+                        <div class="tier-val" id="stat-wpn-tier">+0</div>
+                        <div style="font-size:10px; color:#fef08a; margin-top:3px;" id="stat-wpn-bonus">+공 0</div>
+                    </div>
+                    <div class="equip-slot arm-slot" data-label="방어구">
+                        <div class="slot-icon">🛡️</div>
+                        <div class="tier-val" id="stat-arm-tier">+0</div>
+                        <div style="font-size:10px; color:#fef08a; margin-top:3px;" id="stat-arm-bonus">+방 0</div>
+                    </div>
+                    <div class="equip-slot acc-slot cash-glow" data-label="캐시악세">
+                        <div class="slot-icon">💍</div>
+                        <div class="tier-val" id="stat-acc-tier">+0</div>
+                        <div style="font-size:10px; color:#e9d5ff; margin-top:3px;" id="stat-acc-bonus">+공0 방0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 전투 로그 출력 (슬릭한 터미널 스타일) -->
+            <div id="log-container" class="glass-panel log-panel">
+                <div class="log-entry sys">▶ SYSTEM BOOT... WELCOME.</div>
+                <div class="log-entry guide">[TIP] 하단의 '사냥 시작'을 눌러 돈을 모으세요.</div>
+            </div>
+        </main>
+
+        <!-- 하단 패널: 모바일 앱 스타일 플로팅 조작부 -->
+        <footer id="bottom-panel" class="glass-panel padding-safe-bottom">
+            <!-- 1. 강화 그룹 (무기, 방어구, 캐시악세) -->
+            <div class="action-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 8px;">
+                <button id="btn-enhance-wpn" class="btn btn-danger" style="padding:8px 4px;">
+                    무기 강화 <span style="font-size:11px; color:#fef08a;" id="next-stat-wpn">(+공8)</span><br><small><span
+                            id="cost-wpn">1,000</span> A</small>
+                    <div style="font-size:10px; color:#fca5a5; margin-top:2px;" id="rate-wpn">75%</div>
+                </button>
+                <button id="btn-enhance-arm" class="btn btn-danger" style="padding:8px 4px;">
+                    방어구 강화 <span style="font-size:11px; color:#fef08a;" id="next-stat-arm">(+방5)</span><br><small><span
+                            id="cost-arm">800</span> A</small>
+                    <div style="font-size:10px; color:#fca5a5; margin-top:2px;" id="rate-arm">75%</div>
+                </button>
+                <button id="btn-cash-acc" class="btn btn-premium" style="padding:8px 4px;">
+                    💎 캐시 장비 <span style="font-size:11px; color:#fef08a;"
+                        id="next-stat-acc">(+공15/방5)</span><br><small><span id="cost-acc">500</span> 원</small>
+                    <div style="font-size:11px; color:#e9d5ff; margin-top:2px;" id="rate-acc">85%</div>
+                </button>
+            </div>
+
+            <!-- 승진 버트 (평소엔 숨김) -->
+            <button id="btn-promote" class="btn btn-promote-special pulse-anim full-width mb-2"
+                style="display:none; margin-bottom: 8px;">
+                <span class="btn-icon">🌟</span> <b>승진 심사</b>
+            </button>
+
+            <!-- 2. 보급 그룹 (회복물약, 경험치물약, 코인투기) -->
+            <div class="action-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 8px;">
+                <button id="btn-heal" class="btn btn-secondary" style="padding:8px 4px;">
+                    <span class="btn-icon">❤️</span> <b>회복 물약</b><br><small><span id="cost-heal">50</span> 원</small>
+                    <div style="font-size:10px; color:#86efac; margin-top:2px;">HP 30% 회복</div>
+                </button>
+                <button id="btn-upgrade" class="btn btn-secondary" style="padding:8px 4px;">
+                    <span class="btn-icon">💊</span> <b>경험치 앰플</b><br><small><span id="cost-upg">100</span> A</small>
+                    <div style="font-size:10px; color:#93c5fd; margin-top:2px;">EXP 35% 획득</div>
+                </button>
+                <button id="btn-open-coin" class="btn bg-dark border-glass"
+                    style="border-color:var(--accent-gold); box-shadow:0 0 5px rgba(245,158,11,0.3); padding:8px 4px;">
+                    <span class="btn-icon">📈</span> L-Coin 투기<br><small>코인 차트</small>
+                </button>
+            </div>
+
+            <!-- 하단부: 사냥 컨트롤 및 휴식(처세술) 메뉴 -->
+            <div class="hunt-controls mt-2">
+                <button id="btn-soulshot" class="btn btn-secondary" style="flex: 0 0 60px; padding: 0;">
+                    <span style="font-size:12px; color:#94a3b8;">정령탄</span><br>OFF
+                </button>
+                <button id="btn-speed" class="btn btn-speed" style="display:none;">
+                    ⚡ 1x
+                </button>
+                <button id="btn-farm" class="btn btn-hero flex-grow glow-btn">
+                    <span class="btn-icon">⚔️</span>
+                    <span class="btn-text">몰래 사냥 시작</span>
+                </button>
+            </div>
+
+            <!-- 휴식 중 나타나는 아내 분노 감소(처세술) 메뉴 - 1줄 배치 -->
+            <div id="peace-menu" class="mt-2" style="display: none; grid-template-columns: repeat(3, 1fr); gap: 6px;">
+                <button id="btn-peace-1" class="btn bg-dark border-glass" style="padding:8px 2px;">🧽
+                    설거지<br><small><span id="wash-count">-10 (5/5)</span></small></button>
+                <button id="btn-peace-2" class="btn bg-mid border-glass" style="padding:8px 2px;">🍗
+                    치킨배달<br><small>500원(-30)</small></button>
+                <button id="btn-peace-3" class="btn bg-high border-glass" style="padding:8px 2px;">👜
+                    명품백<br><small>3천원(초기화)</small></button>
+            </div>
+        </footer>
+
+        <!-- 모달 오버레이 영역 -->
+        <div id="modal-overlay" class="modal-overlay" style="display:none;">
+            <!-- 직급 계급도 모달 -->
+            <div id="rank-modal" class="modal-content glass-panel" style="display:none;">
+                <h3 style="margin-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:10px;">👑
+                    승진 계급도</h3>
+                <ul style="list-style:none; line-height:1.8; margin-bottom:15px; font-size:14px; color:#cbd5e1;">
+                    <li>👨‍💼 <b>김대리</b> (기본)</li>
+                    <li>🤵 <b>과장님</b> (대폭 상승) - CP 150</li>
+                    <li>🕵️‍♂️ <b>부장님</b> (핵과금) - CP 1,000</li>
+                    <li>👑 <b>대표/건물주</b> (서버 지배자) - CP 5,000</li>
+                </ul>
+                <button id="btn-close-rank" class="btn btn-secondary full-width">닫기</button>
+            </div>
+
+            <!-- 광고 시청 모달 -->
+            <div id="ad-modal" class="modal-content glass-panel" style="display:none;">
+                <h3 style="margin-bottom:10px;">📺 광고 시청</h3>
+                <p style="font-size:13px; color:#cbd5e1; margin-bottom:15px; line-height:1.4;">설거지 무료 횟수(5회)가
+                    소진되었습니다.<br>광고를 시청하고 5회를 충전하시겠습니까?</p>
+                <div id="ad-timer"
+                    style="display:none; font-size:32px; text-align:center; font-weight:900; margin-bottom:15px; color:#fbbf24; text-shadow:0 0 10px rgba(251,191,36,0.6);">
+                    5</div>
+                <div class="action-grid mt-2" id="ad-actions">
+                    <button id="btn-watch-ad" class="btn btn-success">시청하기</button>
+                    <button id="btn-close-ad" class="btn btn-secondary">닫기</button>
+                </div>
+            </div>
+
+            <!-- 현금 환전소 모달 -->
+            <div id="exchange-modal" class="modal-content glass-panel" style="display:none;">
+                <h3
+                    style="margin-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:10px; color:var(--accent-gold);">
+                    🏦 뒷골목 환전소</h3>
+                <p style="font-size:13px; color:#cbd5e1; margin-bottom:15px; line-height:1.4;">비자금을 안전하게 게임 웹머니(아데나)로
+                    세탁해 드립니다.<br><span style="color:#f472b6;">현재 환율: 1 비자금 = 10 아데나</span></p>
+
+                <div
+                    style="background:rgba(0,0,0,0.5); padding:10px; border-radius:8px; margin-bottom:15px; text-align:center;">
+                    <span style="font-size:12px; color:#94a3b8;">보유 비자금</span>
+                    <div style="font-size:20px; font-weight:bold; color:#00f0ff" id="exchange-current-fund">0</div>
+                </div>
+
+                <div class="action-grid multi-rows">
+                    <button id="btn-exch-1" class="btn btn-secondary">
+                        1,000원 환전<br><small>▶ 10,000 A</small>
+                    </button>
+                    <button id="btn-exch-2" class="btn btn-secondary">
+                        5,000원 환전<br><small>▶ 50,000 A</small>
+                    </button>
+                    <button id="btn-exch-all" class="btn btn-promote-special full-width pulse-anim"
+                        style="padding:10px;">
+                        전액 환전 (ALL-IN)
+                    </button>
+                </div>
+                <button id="btn-close-exchange" class="btn btn-secondary full-width mt-2"
+                    style="background:rgba(255,255,255,0.1);">닫기</button>
+            </div>
+
+            <!-- 사내 벤처 코인 (L-Coin) 투기장 모달 -->
+            <div id="coin-modal" class="modal-content" style="display:none; text-align:center;">
+                <h3 style="margin-bottom:10px; color:var(--accent-gold);">📈 사내 벤처 코인 (L-Coin)</h3>
+                <p style="font-size:12px; color:#cbd5e1; margin-bottom:15px; line-height:1.4;">사내 찌라시에 따라 <b>가격이 수시로
+                        폭등/폭락</b>합니다.<br>아데나를 투자해 인생 역전을 노리세요!</p>
+
+                <div
+                    style="background:rgba(0,0,0,0.5); padding:15px; border-radius:12px; margin-bottom:15px; border:1px solid rgba(255,255,255,0.05);">
+                    <div style="font-size:12px; color:#9ca3af;">현재 시세 (1 L-Coin)</div>
+                    <div id="coin-price-display" style="font-size:28px; font-weight:900; color:#10b981; margin:5px 0;">
+                        500 A</div>
+                    <div id="coin-trend-text" style="font-size:12px; color:#cbd5e1;">── 변화 없음 ──</div>
+                </div>
+
+                <div
+                    style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:5px; padding:0 10px;">
+                    <div>보유 아데나: <b id="coin-my-adena" style="color:#fbbf24;">0</b></div>
+                    <div>보유 코인: <b id="coin-my-amount" style="color:#38bdf8;">0개</b></div>
+                </div>
+                <div
+                    style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:15px; padding:0 10px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px;">
+                    <div>평단가: <b id="coin-avg-price" style="color:#94a3b8;">0 A</b></div>
+                    <div>수익률: <b id="coin-profit-rate" style="color:#94a3b8;">0.00%</b></div>
+                </div>
+
+                <div class="action-grid" style="grid-template-columns: 1fr 1fr;">
+                    <button id="btn-coin-buy" class="btn btn-danger">
+                        최대 매수 (ALL)<br><small>아데나 👉 코인</small>
+                    </button>
+                    <button id="btn-coin-sell" class="btn btn-primary">
+                        전액 매도 (ALL)<br><small>코인 👉 아데나</small>
+                    </button>
+                </div>
+                <button id="btn-close-coin" class="btn btn-secondary full-width mt-2"
+                    style="background:rgba(255,255,255,0.05);">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+
+</html>

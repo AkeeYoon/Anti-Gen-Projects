@@ -1,0 +1,996 @@
+:root {
+    /* 모던 컬러 팔레트 (다크 올리브/네이비 계열의 세련된 다크모드) */
+    --bg-dark: #111827;
+    --bg-darker: #030712;
+    --glass-bg: rgba(17, 24, 39, 0.75);
+    --glass-border: rgba(255, 255, 255, 0.08);
+
+    --accent-gold: #f59e0b;
+    --accent-blue: #0ea5e9;
+    --accent-red: #ef4444;
+    --accent-green: #10b981;
+    --accent-purple: #8b5cf6;
+
+    --text-main: #f9fafb;
+    --text-muted: #9ca3af;
+
+    /* 계급별 테마 색상 (CSS Variables 동적 할당) */
+    --theme-color: #38bdf8;
+    /* 기본 블루 */
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body,
+html {
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--bg-darker);
+    color: var(--text-main);
+    font-family: 'Outfit', 'Noto Sans KR', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    /* top align for iOS */
+    overflow: hidden;
+}
+
+/* 모바일 앱 뷰 리미터 (9:20 비율 강제) */
+#game-container {
+    width: 100%;
+    max-width: 420px;
+    height: 100dvh;
+    /* 모바일 브라우저 UI를 고려한 동적 높이 */
+    max-height: 933px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background: radial-gradient(circle at top, var(--bg-dark), var(--bg-darker));
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.9);
+    transition: background 0.5s ease;
+    margin: 0 auto;
+    border-radius: 24px;
+    overflow: hidden;
+    user-select: none;
+    /* 드래그 및 텍스트 선택 방지는 컨테이너 안에서만 수행 */
+    /* 데스크탑 환경 기준 상하 여백 제거 */
+}
+
+/* 진화 단계별 배경 테마 연출 */
+#game-container.tier-1 {
+    background: radial-gradient(circle at top, #1e293b, var(--bg-darker));
+    --theme-color: #94a3b8;
+}
+
+#game-container.tier-2 {
+    background: radial-gradient(circle at top, #064e3b, var(--bg-darker));
+    --theme-color: #34d399;
+}
+
+#game-container.tier-3 {
+    background: radial-gradient(circle at top, #4c1d95, var(--bg-darker));
+    --theme-color: #a78bfa;
+}
+
+#game-container.tier-4 {
+    background: radial-gradient(circle at top, #7f1d1d, var(--bg-darker));
+    --theme-color: #fbbf24;
+}
+
+/* ---------------- 공통 글래스모피즘 패널 ---------------- */
+.glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    border-radius: 16px;
+}
+
+/* ---------------- 상단 헤더 ---------------- */
+#top-panel {
+    padding: env(safe-area-inset-top, 20px) 20px 20px;
+    z-index: 10;
+    border-bottom-left-radius: 24px;
+    border-bottom-right-radius: 24px;
+    background: linear-gradient(180deg, rgba(17, 24, 39, 0.9), rgba(17, 24, 39, 0.4));
+}
+
+.header-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.rank-badge {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--theme-color);
+    border: 1px solid var(--theme-color);
+}
+
+.game-title {
+    font-weight: 900;
+    font-size: 16px;
+    letter-spacing: -0.5px;
+    opacity: 0.9;
+}
+
+.top-stats {
+    display: flex;
+    gap: 10px;
+}
+
+.stat-pill {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 10px 14px;
+    border-radius: 16px;
+    font-size: 15px;
+    font-weight: 800;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.05);
+}
+
+.cash-pill {
+    color: #00f0ff;
+    text-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+}
+
+.progress-bar-container {
+    height: 10px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 5px;
+    overflow: hidden;
+    width: 100%;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.progress-fill {
+    height: 100%;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.anger-gradient {
+    background: linear-gradient(90deg, #f59e0b, #ef4444);
+}
+
+.hp-gradient {
+    background: linear-gradient(90deg, #dc2626, #b91c1c);
+}
+
+.exp-gradient {
+    background: linear-gradient(90deg, #38bdf8, #818cf8);
+    box-shadow: 0 0 5px rgba(56, 189, 248, 0.5);
+}
+
+/* ---------------- 중앙 게임 뷰 ---------------- */
+#mid-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: 6px 12px 0px;
+    gap: 8px;
+}
+
+#visual-view {
+    flex: 0 0 115px;
+    position: relative;
+    border-radius: 24px;
+    overflow: hidden;
+    background-image:
+        linear-gradient(rgba(17, 24, 39, 0.8), rgba(3, 7, 18, 0.95)),
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"><rect width="60" height="60" fill="none" stroke="%231f2937" stroke-width="1.5" stroke-dasharray="4 4"/></svg>');
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.9), 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* 처세술 버튼 스타일 */
+.border-glass {
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.bg-dark {
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+}
+
+.bg-mid {
+    background: linear-gradient(135deg, #b45309, #78350f);
+}
+
+.bg-high {
+    background: linear-gradient(135deg, #be185d, #831843);
+}
+
+.character-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 85%;
+    z-index: 2;
+}
+
+.ui-sprite {
+    font-size: 56px;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+}
+
+/* ---------------- 퀘스트 / 긴급 업무 모달 스타일 ---------------- */
+.quest-modal-container {
+    background: linear-gradient(180deg, #374151, #111827);
+    border: 1px solid var(--accent-red);
+    box-shadow: 0 0 40px rgba(239, 68, 68, 0.3);
+}
+
+.quest-option {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 13px;
+    text-align: left;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.quest-option:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--accent-blue);
+}
+
+#character-sprite {
+    transform: scaleX(-1);
+    animation: idle 2.5s infinite ease-in-out;
+}
+
+#monster-sprite {
+    animation: float 3s infinite ease-in-out;
+}
+
+.vs-effect {
+    font-weight: 900;
+    font-size: 24px;
+    color: var(--text-muted);
+    font-style: italic;
+    opacity: 0.5;
+}
+
+.enemy-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80px;
+}
+
+.player-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80px;
+}
+
+.mt-2 {
+    margin-top: 8px;
+}
+
+.mb-2 {
+    margin-bottom: 8px;
+}
+
+/* 몬스터 피격 하이라이트 효과 (빨간색) */
+.hit-anim-monster {
+    animation: flash-red 0.15s ease-out;
+}
+
+@keyframes flash-red {
+    0% {
+        filter: drop-shadow(0 0 20px #ef4444) brightness(1.5) sepia(1) hue-rotate(-50deg) saturate(3);
+    }
+
+    100% {
+        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5)) brightness(1) sepia(0) saturate(1);
+    }
+}
+
+/* 플레이어 레벨업 하이라이트 효과 (흰색) */
+.level-up-anim {
+    animation: flash-white 0.8s ease-out;
+}
+
+@keyframes flash-white {
+    0% {
+        filter: drop-shadow(0 0 40px #ffffff) brightness(2);
+        transform: scaleX(-1) scale(1.1);
+    }
+
+    50% {
+        filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.8)) brightness(1.5);
+        transform: scaleX(-1) scale(1.05);
+    }
+
+    100% {
+        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5)) brightness(1);
+        transform: scaleX(-1) scale(1);
+    }
+}
+
+/* ---------------- 스탯 보드 ---------------- */
+.in-game-dashboard {
+    padding: 10px;
+    border-radius: 16px;
+}
+
+.main-stats-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 8px;
+}
+
+.level-box,
+.adena-box,
+.combat-power {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.flex-grow {
+    flex: 1;
+    flex-direction: row;
+    gap: 8px;
+    justify-content: flex-start;
+    padding: 10px 15px;
+}
+
+.level-box {
+    min-width: 60px;
+}
+
+.combat-power {
+    min-width: 90px;
+}
+
+.label {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.val {
+    font-size: 16px;
+    font-weight: 900;
+}
+
+.text-glow {
+    color: #fff;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.color-gold {
+    color: var(--accent-gold);
+}
+
+.color-cp {
+    color: var(--theme-color);
+    text-shadow: 0 0 10px var(--theme-color);
+    font-size: 18px !important;
+}
+
+/* 장비 슬롯 */
+.equip-viewer {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+}
+
+.equip-slot {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 6px 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    position: relative;
+}
+
+.equip-slot::before {
+    content: attr(data-label);
+    font-size: 9px;
+    color: #64748b;
+    font-weight: bold;
+}
+
+.slot-icon {
+    font-size: 24px;
+    line-height: 1;
+}
+
+.tier-val {
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.cash-glow {
+    border-color: rgba(168, 85, 247, 0.5);
+    box-shadow: inset 0 0 15px rgba(168, 85, 247, 0.1);
+}
+
+.cash-glow .tier-val {
+    color: #c084fc;
+    text-shadow: 0 0 8px #a855f7;
+}
+
+/* ---------------- 전투 로그 터미널 ---------------- */
+.log-panel {
+    min-height: 80px;
+    flex: 1;
+    padding: 10px 12px;
+    border-radius: 12px;
+    overflow-y: auto;
+    font-size: 11.5px;
+    line-height: 1.4;
+    font-family: monospace;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: rgba(0, 0, 0, 0.4);
+    /* 로그창 가독성을 위해 배경을 조금 더 어둡게 */
+}
+
+.log-entry {
+    margin-bottom: 3px;
+    color: #cbd5e1;
+    animation: fadeIn 0.2s ease-out;
+    word-break: keep-all;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.log-entry.sys {
+    color: var(--accent-blue);
+    font-weight: bold;
+}
+
+.log-entry.talk {
+    color: #f472b6;
+    font-style: italic;
+}
+
+.log-entry.dmg {
+    color: var(--accent-red);
+    font-weight: bold;
+}
+
+.log-entry.adena {
+    color: var(--accent-gold);
+}
+
+.log-entry.enhance-success {
+    color: var(--accent-green);
+    font-size: 13px;
+    font-weight: 900;
+    text-shadow: 0 0 8px var(--accent-green);
+}
+
+.log-entry.enhance-fail {
+    color: #64748b;
+    text-decoration: line-through;
+}
+
+.log-entry.guide {
+    color: #86efac;
+}
+
+.log-entry.promo {
+    color: var(--accent-gold);
+    font-size: 14px;
+    font-weight: 900;
+    text-align: center;
+    margin: 10px 0;
+    text-shadow: 0 0 10px currentColor;
+}
+
+/* ---------------- 사냥 컨트롤 및 하단 액션 버튼 ---------------- */
+.hunt-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-speed {
+    padding: 0 10px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--accent-gold);
+    color: var(--accent-gold);
+    font-size: 16px;
+    border-radius: 14px;
+}
+
+#bottom-panel {
+    padding: 8px 10px env(safe-area-inset-bottom, 8px);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    z-index: 10;
+}
+
+.action-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.action-grid.multi-rows {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+.btn {
+    border: none;
+    border-radius: 12px;
+    padding: 8px 6px;
+    color: var(--text-main);
+    font-weight: 800;
+    font-size: 13px;
+    cursor: pointer;
+    position: relative;
+    /* 자식 요소 절대 위치 기준 */
+    overflow: hidden;
+    /* 버튼 영역 바깥으로 번지는 효과 차단 */
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    background: rgba(255, 255, 255, 0.05);
+    /* 플랫 베이스 */
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 2px 4px rgba(0, 0, 0, 0.3);
+    z-index: 20;
+    touch-action: manipulation;
+    /* 모바일 더블탭 줌 방지 및 터치 즉시 반응 유도 */
+}
+
+.btn small {
+    font-size: 10px;
+    font-weight: normal;
+    opacity: 0.9;
+}
+
+.btn:active {
+    transform: scale(0.96) translateY(2px);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* 프리미엄 버튼 테마들 */
+.btn-hero {
+    background: linear-gradient(135deg, var(--theme-color), #2563eb);
+    padding: 16px;
+    flex-direction: row;
+    font-size: 18px;
+    box-shadow: 0 6px 0 #1e3a8a, 0 10px 20px rgba(37, 99, 235, 0.4);
+}
+
+.btn-hero .btn-icon {
+    font-size: 20px;
+}
+
+.btn-primary {
+    background: linear-gradient(180deg, var(--accent-blue), #0284c7);
+}
+
+.btn-secondary {
+    background: linear-gradient(180deg, #374151, #1f2937);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.btn-success {
+    background: linear-gradient(180deg, var(--accent-green), #059669);
+}
+
+.btn-danger {
+    background: linear-gradient(180deg, var(--accent-red), #b91c1c);
+    animation: dangerPulse 1.5s infinite;
+}
+
+.btn-premium {
+    background: linear-gradient(135deg, #c084fc, #7e22ce);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.btn-promote-special {
+    background: linear-gradient(135deg, #fbbf24, #d97706);
+    box-shadow: 0 6px 0 #78350f, 0 0 20px rgba(251, 191, 36, 0.6);
+    color: #000;
+}
+
+/* ---------------- 애니메이션 & 이펙트 ---------------- */
+@keyframes idle {
+
+    0%,
+    100% {
+        transform: scaleX(-1) translateY(0);
+    }
+
+    50% {
+        transform: scaleX(-1) translateY(-6px);
+    }
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(8px);
+    }
+}
+
+@keyframes dangerPulse {
+    0% {
+        box-shadow: 0 0 0 rgba(239, 68, 68, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 15px rgba(239, 68, 68, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 rgba(239, 68, 68, 0);
+    }
+}
+
+.hit-anim {
+    animation: hit 0.2s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    filter: drop-shadow(0 0 15px red);
+}
+
+@keyframes hit {
+    0% {
+        transform: scale(1.1) rotate(0deg);
+        filter: brightness(1) sepia(50%) hue-rotate(-50deg);
+    }
+
+    30% {
+        transform: scale(1) rotate(-10deg) translateX(-15px);
+    }
+
+    60% {
+        transform: scale(1.05) rotate(10deg) translateX(10px);
+    }
+
+    100% {
+        transform: scale(1) rotate(0) translateX(0);
+        filter: brightness(1) drop-shadow(0 10px 10px rgba(0, 0, 0, 0.5));
+    }
+}
+
+.glow-btn::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0) 100%);
+    transform: rotate(30deg);
+    animation: wipe 3s infinite;
+    pointer-events: none;
+}
+
+@keyframes wipe {
+    0% {
+        left: -150%;
+    }
+
+    100% {
+        left: 150%;
+    }
+}
+
+.pulse-anim {
+    animation: pulseBig 1.5s infinite;
+}
+
+@keyframes pulseBig {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* 레트로 액션 흔들림 (최소화하여 세련되게) */
+.crt-effect {
+    animation: screenShake 0.3s ease-out;
+    filter: contrast(130%) saturate(150%);
+}
+
+.crt-effect-fail {
+    animation: screenShakeFail 0.6s ease-out;
+    filter: grayscale(100%) contrast(150%) brightness(0.7);
+}
+
+@keyframes screenShake {
+    0% {
+        transform: translate(3px, 3px) scale(1.02);
+    }
+
+    20% {
+        transform: translate(-3px, -3px);
+    }
+
+    40% {
+        transform: translate(2px, 3px);
+    }
+
+    60% {
+        transform: translate(-2px, -2px);
+    }
+
+    80% {
+        transform: translate(3px, -3px);
+    }
+
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+}
+
+@keyframes screenShakeFail {
+    0% {
+        transform: translate(5px, 0);
+    }
+
+    10% {
+        transform: translate(-5px, 0);
+    }
+
+    20% {
+        transform: translate(4px, 0);
+    }
+
+    30% {
+        transform: translate(-4px, 0);
+    }
+
+    40% {
+        transform: translate(3px, 0);
+    }
+
+    50% {
+        transform: translate(-3px, 0);
+    }
+
+    100% {
+        transform: translate(0, 0);
+    }
+}
+
+#crt-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    background: rgba(255, 255, 255, 0);
+    transition: background 0.05s;
+    mix-blend-mode: overlay;
+}
+
+.flash-effect {
+    background: transparent !important;
+    /* 눈부심 완전 삭제 */
+    z-index: 10;
+}
+
+.flash-fail {
+    background: transparent !important;
+    mix-blend-mode: multiply;
+}
+
+.flash-success {
+    background: transparent !important;
+    mix-blend-mode: color-dodge;
+}
+
+/* ---------------- 모달 창 ---------------- */
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background: linear-gradient(180deg, #1f2937, #111827);
+    width: 90%;
+    max-width: 320px;
+    padding: 24px;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+    animation: popIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* ---------------- 레이아웃 동적 변화 (사냥 전투 중 시) ---------------- */
+#mid-panel.hunting #visual-view {
+    flex: 0 0 100px;
+    transform: scale(0.85);
+    margin-bottom: -15px;
+}
+
+#mid-panel.hunting .in-game-dashboard {
+    padding: 6px 12px;
+    margin-bottom: 2px;
+}
+
+#mid-panel.hunting #log-container {
+    min-height: 180px;
+    flex: 1;
+    font-size: 13.5px;
+    line-height: 1.6;
+}
+
+/* ---------------- 데미지 플로팅 텍스트 ---------------- */
+.floating-dmg {
+    position: absolute;
+    color: #fff;
+    font-weight: 900;
+    font-size: 20px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 1);
+    pointer-events: none;
+    z-index: 15;
+    animation: floatDmg 0.8s ease-out forwards;
+}
+
+.floating-dmg.crit {
+    color: #fbbf24;
+    font-size: 26px;
+    text-shadow: 0 0 10px #f59e0b, 0 2px 4px rgba(0, 0, 0, 1);
+}
+
+@keyframes floatDmg {
+    0% {
+        transform: translate(-50%, 0) scale(0.5);
+        opacity: 1;
+    }
+
+    20% {
+        transform: translate(-50%, -20px) scale(1.2);
+    }
+
+    100% {
+        transform: translate(-50%, -60px) scale(1);
+        opacity: 0;
+    }
+}
+
+/* 정령탄 이펙트 */
+.btn-soulshot-on {
+    background: linear-gradient(135deg, #0ea5e9, #0284c7) !important;
+    box-shadow: 0 0 15px rgba(14, 165, 233, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.5) !important;
+    color: white !important;
+}
+
+.hit-anim.soulshot-hit {
+    filter: drop-shadow(0 0 20px #38bdf8) brightness(2) !important;
+}
+
+/* ---------------- 모바일 반응형 터치(Viewport) 대응 ---------------- */
+@media screen and (max-width: 600px) {
+
+    body,
+    html {
+        height: 100%;
+        background-color: #000;
+        margin: 0;
+        padding: 0;
+    }
+
+    #game-container {
+        width: 100vw;
+        height: 100vh;
+        /* fallback */
+        height: 100dvh;
+        max-width: 100%;
+        max-height: none;
+        border-radius: 0;
+        margin: 0;
+        /* 모바일에선 풀스크린이므로 둥근 테두리 제거 */
+        box-shadow: none;
+        aspect-ratio: auto;
+    }
+
+    /* 폰트나 간격의 미세 조정 (화면이 너무 좁을 경우 방지) */
+    .btn {
+        padding: 6px 4px;
+        font-size: 12px;
+    }
+
+    .btn small {
+        font-size: 9px;
+    }
+
+    .in-game-dashboard {
+        padding: 8px;
+    }
+
+    .stat-pill {
+        padding: 8px 10px;
+        font-size: 13px;
+    }
+}
